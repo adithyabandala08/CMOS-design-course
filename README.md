@@ -155,7 +155,7 @@ Consider,
 
 **(ii) Apply Small Positive VGS (>0):**
 
-<img width="883" height="492" alt="Screenshot 2026-02-22 215248" src="https://github.com/user-attachments/assets/32fb13bc-dfea-478e-8ff0-ba3668ec8a40" />
+<img width="1321" height="496" alt="image" src="https://github.com/user-attachments/assets/e646bc6d-6dfa-4939-84ad-09c6a75e8c71" />
 
 **Accumulation**
 
@@ -163,6 +163,91 @@ Consider,
 * Gate-oxide-substrate acts as capacitor: +ve gate repels majority carriers (holes, +ve) in P-substrate downward.
 * Leaves behind minority carriers (electrons, -ve) → accumulation of -ve charge near oxide interface.
 * Starts forming depletion region.
+
+(iii) Reaching Strong Inversion (Threshold Voltage - VT):
+
+<img width="866" height="504" alt="image" src="https://github.com/user-attachments/assets/26c3e4f7-fd09-402e-9947-abc11db1ddb6" />
+
+As VGS increases beyond small positive values:
+
+* Depletion region widens (more majority carriers repelled).
+* More negative charge (electrons) accumulates at the surface.
+* At a specific VGS value → surface of P-substrate inverts from P-type to N-type (strong inversion).
+* This forms a continuous N-type channel connecting source to drain.
+* The VGS at which strong inversion occurs = Threshold Voltage (VT).
+
+### **NOTE**
+
+After inversion, further increase in VGS widens the channel (more electrons attracted), but depletion width stays almost constant (region already depleted).
+
+<img width="528" height="459" alt="Screenshot 2026-02-22 221006" src="https://github.com/user-attachments/assets/727eee41-3347-4dfa-9bcf-c5435ccc5f66" />
+
+Channel electrons come from heavily doped n⁺ source region (attracted like a magnet).
+
+
+### **Body Effect on Threshold Voltage (VT):**
+
+Normally VSB = 0 (source and body both grounded).
+
+When VSB > 0 (source positive relative to body/substrate):
+  * Additional reverse bias on source-body PN junction.
+  * Increases depletion width around source (extra reverse bias widens depletion).
+  * Makes inversion harder → requires higher VGS to achieve same inversion level → VT increases (body effect).
+
+Same VGS increase shows delayed/less inversion when VSB > 0 compared to VSB = 0.
+
+<img width="1296" height="603" alt="image" src="https://github.com/user-attachments/assets/d1002ce7-191d-4b3b-bdf5-d472ae6bb83d" />
+
+Left: VSB = 0 → normal depletion width.
+
+Right: VSB = +ve (below threshold voltage) → wider depletion under source.
+
+Additionally,  
+
+When increasing VGS in both scenarios (VSB=0 vs VSB>0):
+
+Depletion width increases and negative charges (electrons) accumulate at the surface in both, expecting inversion.
+
+**Key difference with VSB>0:** Positive potential on source attracts accumulated electrons back toward source.
+
+This delays surface inversion → channel forms with a slant.
+
+**At same VGS:** Inversion occurs at lower VGS for VSB=0 (full N-type surface at VTO).
+
+For VSB>0: Needs extra VGS (VTO + V1) to overcome pull and achieve strong inversion.
+
+**Conclusion:** Positive VSB requires additional gate potential for strong inversion.
+
+<img width="1390" height="748" alt="image" src="https://github.com/user-attachments/assets/5554603c-7130-414b-897f-7c3e5e224a28" />
+
+
+Threshold Voltage Equation:
+
+<img width="607" height="232" alt="image" src="https://github.com/user-attachments/assets/6c66c4dd-7f56-4a52-89b3-b8b63ce3186a" />
+
+
+Body Effect Coefficient (γ):
+
+<img width="371" height="205" alt="image" src="https://github.com/user-attachments/assets/ba639b24-7be7-43bc-8158-d988d3134726" />
+
+
+Fermi Potential (Φ_f):
+
+<img width="461" height="122" alt="image" src="https://github.com/user-attachments/assets/f2e96acc-7c51-4c69-bfbd-4141b4a51b4e" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
