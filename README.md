@@ -25,20 +25,70 @@ This is the classic CMOS inverter diagram shown early in class:
 * NMOS at bottom: source to Vss, gate to Vin, drain to Vout
 * Load capacitor CL attached at Vout (represents fanout + wire cap)
 
-# **2. Why do we care about SPICE?**
+# **2. SPICE Simulations**
 
-* In physical design / STA we talk about delays, clock trees, crosstalk, OCV, etc. — but none of this makes sense without knowing where the cell delay actually comes from.
-* **Answer:** Cell delays come from SPICE simulations of the actual transistor-level circuit.
-* **Without SPICE →** no accurate delay numbers → no meaningful STA, no clock tree synthesis, no useful physical design flow.
+We simulate these circuits in SPICE to see real behavior.
 
-# **3. Delay Tables – How are they created?**
+Input a waveform at Vin → get output waveform at Vout.
 
-We don’t run SPICE for every path in the chip. Instead, we characterize standard cells once → create delay tables (also called .lib timing arcs).
+For inverter, output is inverted version of input.
 
-**Typical delay table format:**
+From the waveforms we measure propagation delay → time from 50% of input change to 50% of output change.
 
-* Rows: Input transition time (slew) – e.g., 20 ps, 40 ps, 80 ps, …
-* Columns: Output load capacitance – e.g., 10 fF, 30 fF, 50 fF, 70 fF, …
-* Table entries: Delay value (usually in ps) for that slew + load combination
+* Delay depends on:
+  * How much current the transistors can provide (depends on W/L ratio)
+  * Output load capacitance (CL)
+
+Higher W/L → more current → faster switching → lower delay
+
+We use SPICE to try different W/L and see how delay changes.
+
+### **Why SPICE matters in real projects?**
+
+In physical design (placement, routing, clock tree, crosstalk fix), we don’t run SPICE every time, but all timing numbers (delays, slacks) come from SPICE-characterized libraries.
+
+If SPICE models are wrong → entire timing analysis is wrong → chip may fail.
+
+<img width="1014" height="872" alt="Screenshot 2026-02-22 192956" src="https://github.com/user-attachments/assets/caa072cc-d07f-4554-b89c-26016bf42747" />
+
+**Transistor Behavior in SPICE**
+
+To understand delay at lowest level, we look at transistor curves.
+
+* Upper plot
+  * Ids vs Vout (or Vds) curves for PMOS and NMOS at different Vin values (0V, 0.5V, 1V, 1.5V, 2V)
+  * Shows regions: cutoff (off), linear, saturation
+  * Labels like “PMOS linear”, “NMOS sat”, etc.
+
+* Bottom plot:
+  * Vout vs Vin (DC transfer characteristic)
+  * Inverted curve from ~Vdd to ~0V
+  * Regions marked where PMOS/NMOS are in linear/sat/off during transition
+
+
+These curves show why delay happens - during switching both transistors conduct for a short time, current fights, output moves slowly.
+
+# **3. Delay Tables (Look-up Tables)**
+In practice, we don’t run SPICE for every path. Instead, cell libraries have delay tables.
+
+Delay table = 2D table
+
+* Rows: input transition time (slew rate) in ps
+* Columns: output load capacitance in fF
+* Table entry = propagation delay in ps for that slew + load
+
+If exact load not present (e.g. 60 fF between 50 and 70), we interpolate.
+
+<img width="1264" height="449" alt="Screenshot 2026-02-22 193200" src="https://github.com/user-attachments/assets/02c7b129-0634-4cc0-bcb3-e5a860c11cf8" />
+
+**Buffer tree example**
+
+* Level 1 buffer driving two Level 2 buffers
+* Each Level 2 driving two loads (C1, C2, C3, C4 = 25 fF each assumed)
+* Buffer input caps assumed 30 fF each
+* Total cap at node A ≈ 60 fF, at B and C ≈ 50 fF each
+* Notes about using identical buffers at same level for balanced drive
+
+This is why we size buffers and use trees - to control total capacitance and delay.
 
 
