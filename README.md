@@ -108,5 +108,65 @@ This is why we size buffers and use trees - to control total capacitance and del
 
 
 
+# **4. Introduction to basic element in Circuit design – NMOS**
+
+<img width="568" height="534" alt="Screenshot 2026-02-22 213430" src="https://github.com/user-attachments/assets/c60cc264-6ba8-447f-893a-ef42d8ca2dff" />
+
+**NMOS structure**
+
+Built on P-type substrate
+
+N-channel MOSFET (N-channel forms when turned on)
+
+Main layers (from cross-section diagram):
+
+* P-substrate (base, lightly doped P-type)
+* Body terminal (B) → connected to substrate, usually grounded
+* Isolation regions (left & right) → separate neighboring transistors
+* n⁺ regions (heavily doped N-type):
+  * Left → Source (S)
+  * Right → Drain (D)
+* Channel area → P-substrate between S and D
+* Gate oxide → thin SiO₂ insulator over channel
+* Gate → Poly-Si or metal on top of oxide → Gate terminal (G)
+
+**Why this structure?**
+
+* n⁺ S/D for low resistance
+* Gate controls channel formation
+* Isolation prevents transistor interference
+* Thin gate oxide allows gate voltage to strongly influence channel
+
+### **NOTE**
+**PMOS Structure** : Opposite to NMOS, i.e.  N-substrate + p⁺ source/drain.
+
+
+# **5. Threshold Voltage in NMOS**
+
+**Threshold Voltage (VT):** Minimum gate-to-source voltage (VGS) needed to form a conducting channel between source (S) and drain (D).
+
+Consider, 
+
+**(i) Initial State (VGS = 0):**
+
+* All terminals (G, S, D, B) grounded.
+* P-substrate + n⁺ S/D form back-to-back PN junctions (like diodes).
+* Junctions off → high resistance between S and D → no channel, no conduction.
+
+**(ii) Apply Small Positive VGS (>0):**
+
+<img width="883" height="492" alt="Screenshot 2026-02-22 215248" src="https://github.com/user-attachments/assets/32fb13bc-dfea-478e-8ff0-ba3668ec8a40" />
+
+**Accumulation**
+
+* Gate positively charged (+ve on G).
+* Gate-oxide-substrate acts as capacitor: +ve gate repels majority carriers (holes, +ve) in P-substrate downward.
+* Leaves behind minority carriers (electrons, -ve) → accumulation of -ve charge near oxide interface.
+* Starts forming depletion region.
+
+
+
+
+
 
 
