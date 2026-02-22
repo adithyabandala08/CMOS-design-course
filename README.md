@@ -91,4 +91,22 @@ If exact load not present (e.g. 60 fF between 50 and 70), we interpolate.
 
 This is why we size buffers and use trees - to control total capacitance and delay.
 
+### **Some questions discussed in the lecture:**
+
+**Where does the delay of a cell actually come from?**
+
+* Delay tables come from SPICE simulations (characterization), not random numbers.
+
+**We learned delay models/tables, but are they accurate?**
+
+* Different cells (e.g. BUF1 vs BUF2) have different delays because of different transistor sizing (circuit design).
+* To check accuracy → run SPICE with same input slew + same output load → measure delay from waveform → compare with table value.
+
+**How do we verify if static timing analysis (STA) results are correct?**
+
+* STA verification → compare STA delay/slack on critical paths with SPICE simulation of same path.
+
+
+
+
 
