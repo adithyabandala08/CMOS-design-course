@@ -235,7 +235,7 @@ Fermi Potential (Φ_f):
 <img width="461" height="122" alt="image" src="https://github.com/user-attachments/assets/f2e96acc-7c51-4c69-bfbd-4141b4a51b4e" />
 
 
-### **What happens when we apply voltage to drain (VDS) ? **
+### **What happens when we apply voltage to drain (VDS) ?**
 
 Consider,
 
@@ -277,6 +277,75 @@ Voltage V(x) along channel from x=0 (source end ≈ 0 V) to x=L (drain end ≈ V
 ### **Note:**
 
 Actual drawn channel length > effective length L (due to fabrication effects like lateral diffusion).
+
+### **Charge & Drift Current Derivation**
+
+Induced Charge in Channel (Q(x)):
+
+In presence of VDS, induced electron charge density varies along channel.
+
+Charge at any point x proportional to effective gate-to-channel voltage minus threshold:
+
+<img width="386" height="193" alt="image" src="https://github.com/user-attachments/assets/85e112ee-fc76-4522-9d8b-6ad2d2cac756" />
+
+**Q(x) = –Cox × (VGS – V(x) – VT)** (Negative sign because electrons are negative carriers)
+
+* Cox = oxide capacitance per unit area = ε_ox / t_ox
+* ε_ox = 3.97 × ε₀ (relative permittivity of oxide film)
+* t_ox = gate oxide thickness (technology constant from foundry)
+
+We know that there are two current types in MOSFET: **drift and diffusion**
+
+* Drift current: Due to electric field (potential difference) → dominant here.
+
+* Diffusion current: Due to carrier concentration gradient → small here.
+
+**For small VDS → drift dominates → current flows from source to drain.**
+
+### **Drift current ID = charge density × velocity × area**
+
+<img width="855" height="780" alt="image" src="https://github.com/user-attachments/assets/bdbaf970-7bea-4a07-9298-dd528202ac81" />
+
+Top view of MOSFET: Gate overlaps source/drain, channel is rectangle of length L and width W.
+
+
+More precisely:
+
+ID (Drift currrent) = (induced charge per unit length) × (carrier velocity) × W
+
+Velocity of carriers proportional to electric field → function of dV/dx along channel.
+
+Induced charge per unit length = W × Q(x) = W × Cox × (VGS – V(x) – VT)
+
+To find total ID, integrate along channel (from x=0 to x=L).
+
+
+![WhatsApp Image 2026-02-23 at 10 51 45 AM](https://github.com/user-attachments/assets/b0120b9a-fb1e-40b5-9191-58400a9602a4)
+
+This is quadratic in VDS
+
+**ID = μ_n × Cox × (W/L) × [(VGS - VT) × VDS - (VDS² / 2)]**
+
+Simplified Linear Region Approximation (Small VDS):
+
+![WhatsApp Image 2026-02-23 at 10 58 25 AM](https://github.com/user-attachments/assets/98374948-753e-454a-8b69-134f7806b409)
+
+
+When VDS is very small i.e.  VDS << (VGS - VT), neglect the VDS²/2 term.
+
+Approximate ID ≈ μ_n × Cox × (W/L) × (VGS - VT) × VDS
+
+**Linear relationship between ID and VDS → acts like a resistor (hence "linear/resistive" region).**
+
+
+
+
+
+
+
+
+
+
 
 
 
