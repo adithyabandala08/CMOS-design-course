@@ -386,6 +386,39 @@ Condition for Pinch-Off / Saturation Entry:
 Even after pinch-off, current still flows because, electrons drift through pinched region due to high electric field near drain.
 
 
+### **Drift current calculation for the saturation region**
+
+**Saturation Current Equation (Ideal Model)**
+
+<img width="1519" height="778" alt="image" src="https://github.com/user-attachments/assets/ec3253ba-4625-4ffd-959b-b962f90170cc" />
+
+Replace VDS with (VGS – VT) in the linear equation
+
+**ID = (kn / 2) × (VGS – VT)²**
+
+Where kn = k_n' × (W/L) = μ_n × Cox × (W/L)
+
+ID now appears independent of VDS → looks like perfect constant current source
+
+**Channel Length Modulation (Real-World Effect)**
+
+* Increasing VDS widens depletion region at drain → effective channel length (L_eff) shortens slightly
+* This causes small increase in ID with VDS (not perfectly constant)
+
+So, more accurate equation:
+
+**ID = (kn / 2) × (VGS – VT)² × [1 + λ VDS]**
+
+λ = channel length modulation parameter
+
+### **NOTE:**
+
+Reducing physical L should increase ID (per kn ∝ 1/L), but in short-channel devices → velocity saturation causes opposite behavior (ID decreases).
+
+
+
+
+
 
 
 
