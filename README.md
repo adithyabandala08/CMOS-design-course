@@ -306,7 +306,7 @@ We know that there are two current types in MOSFET: **drift and diffusion**
 
 <img width="855" height="780" alt="image" src="https://github.com/user-attachments/assets/bdbaf970-7bea-4a07-9298-dd528202ac81" />
 
-Top view of MOSFET: Gate overlaps source/drain, channel is rectangle of length L and width W.
+Top view: Gate overlaps source/drain, channel is rectangle of length L and width W.
 
 
 More precisely:
