@@ -235,6 +235,54 @@ Fermi Potential (Φ_f):
 <img width="461" height="122" alt="image" src="https://github.com/user-attachments/assets/f2e96acc-7c51-4c69-bfbd-4141b4a51b4e" />
 
 
+### **What happens when we apply voltage to drain (VDS) ? **
+
+Consider,
+
+When VGS > VT (with small VDS):
+
+Increasing VGS increases the number of induced electrons in the channel → channel becomes wider/more conductive.
+
+For instance: At VGS = VT → minimal channel.
+
+At VGS = 1 V → wider channel.
+
+At VGS = 1.5 V or 2 V → even wider/more charge carriers.
+
+**Example Conditions:**
+
+VGS = 1 V
+
+VDS = 0.05 V (small positive voltage)
+
+VT = 0.45 V
+
+Since, VGS > VT → channel is on.
+
+Small VDS applied to drain → current can flow from S to D through the channel.
+
+<img width="975" height="687" alt="image" src="https://github.com/user-attachments/assets/26fdeaa5-383a-4ea5-9b71-5a9cd639d4d1" />
+
+In the figure, NMOS with VGS = 1 V on gate, VDS = 0.05 V on drain, VT = 0.45 V.
+
+Voltage V(x) along channel from x=0 (source end ≈ 0 V) to x=L (drain end ≈ VDS).
+
+**Observation** - Voltage Along Channel:
+
+* Without VDS → voltage constant across channel (≈ VGS – VT effective).
+* With small VDS → voltage varies along channel length (x from 0 to L).
+* In between: V(x) increases gradually from 0 to VDS → voltage gradient exists.
+* Effective gate-to-channel voltage at any point = VGS – V(x).
+
+### **Note:**
+
+Actual drawn channel length > effective length L (due to fabrication effects like lateral diffusion).
+
+
+
+
+
+
 
 
 
