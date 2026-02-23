@@ -338,6 +338,58 @@ Approximate ID ≈ μ_n × Cox × (W/L) × (VGS - VT) × VDS
 **Linear relationship between ID and VDS → acts like a resistor (hence "linear/resistive" region).**
 
 
+**Example scenarios:**
+
+Consider, **VT = 0.45 V**
+
+<img width="486" height="262" alt="image" src="https://github.com/user-attachments/assets/80f00dc4-c768-438c-8eef-e4d07e59116c" />
+
+
+**Sweep VDS from 0 to max for linear operation**
+
+**Question:** What happens when VDS exceeds VGS - VT? 
+* Enters saturation.
+
+### **Saturation Region (Pinch-Off Phenomenon)**
+
+<img width="666" height="661" alt="image" src="https://github.com/user-attachments/assets/8c6c9302-5004-4d08-95c2-a9ed4ddc2844" />
+
+* As VDS increases while keeping VGS fixed, the effective gate-to-channel voltage (VGS – VDS) decreases near the drain.
+* When VGS – VDS ≤ VT → surface inversion condition fails near drain → channel begins to disappear (pinch-off starts), as shown in the figures.
+
+<img width="633" height="573" alt="Screenshot 2026-02-23 221520" src="https://github.com/user-attachments/assets/88c53997-ad59-41c3-9d85-b41846e20894" />
+
+<img width="870" height="683" alt="image" src="https://github.com/user-attachments/assets/6646cf86-d0a7-49dc-9e73-e43cbc9800ec" />
+
+
+* Channel remains present near source (where VGS – V(x) > VT) but vanishes near drain.
+
+
+
+Full saturation: VDS ≥ VGS – VT → channel pinched off near drain, no inversion there.
+
+<img width="1464" height="735" alt="image" src="https://github.com/user-attachments/assets/ab448ee1-bcad-45cf-8162-452c798fc74c" />
+
+
+Condition for Pinch-Off / Saturation Entry:
+* Pinch-off begins when VGS – VDS ≤ VT
+
+
+
+**Comparision between linear and saturation regions**
+
+<img width="441" height="224" alt="image" src="https://github.com/user-attachments/assets/fce6e7e5-e272-490c-9401-eb6cb22974eb" />
+
+
+### **NOTE:**
+
+Even after pinch-off, current still flows because, electrons drift through pinched region due to high electric field near drain.
+
+
+
+
+
+
 
 
 
