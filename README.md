@@ -491,7 +491,29 @@ Node Definitions (4 Nodes)
   * Positive in, negative 0
 
 
+### **Technology File & Model Definition**
 
+* Model file contains all constants (VTO, γ, μ_n, Cox, λ, etc.) for NMOS/PMOS.
+* Defined using **.model** statement:
+  * **.model** nmos nmos VTO=... GAMMA=... U0=... COX=...
+  * **Note:** Name "nmos" must exactly match the name used in netlist (M1 ... nmos) and same for PMOS (e.g., .model pmos pmos ...).
+
+<img width="634" height="473" alt="image" src="https://github.com/user-attachments/assets/4aa558df-7ded-4867-b860-44a6fa557cb7" />
+
+* Parameters are technology-specific (different for 1.2 μm, 350 nm, 250 nm, etc.).
+
+**Including Model File in Netlist**
+
+* Use .lib to include external model file:
+  * **.lib 'cmos_models.lib' CMOS_MODELS**
+  * File name (cmos_models.lib) + section name (CMOS_MODELS).
+**.include** or **.lib** brings in all model parameters → SPICE evaluates VT, ID equations using these values.
+
+**Netlist Structure Sections**
+
+* Netlist description → components (M1, R1, Vdd, Vin) and connections.
+* Model inclusion → .lib statement to load technology file.
+* Simulation commands → control what to sweep/measure.
 
 
 
