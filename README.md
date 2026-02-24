@@ -415,6 +415,87 @@ So, more accurate equation:
 
 Reducing physical L should increase ID (per kn ∝ 1/L), but in short-channel devices → velocity saturation causes opposite behavior (ID decreases).
 
+### **Equations involved upto now (recap):**
+
+<img width="554" height="613" alt="image" src="https://github.com/user-attachments/assets/5e2dbf96-08ec-43a6-b19e-11b71f1d9322" />
+
+
+# **6. SPICE SETUP**
+
+<img width="770" height="828" alt="image" src="https://github.com/user-attachments/assets/347b148d-6bc4-4033-af1f-09132560e568" />
+
+
+* SPICE is a simulation engine with built-in MOSFET models (threshold voltage, linear & saturation current equations derived earlier).
+* Feed correct inputs + netlist → SPICE generates accurate waveforms → used for cell delay calculation.
+
+
+**Model Parameters (Technology Constants)**
+* Fixed values from equations: VTO, γ (body effect), Φ_f, μ_n, Cox, etc.
+* Unique for each technology node (e.g., 180 nm, 20 nm).
+
+
+Simplified Netlist Naming
+* Vin → gate input voltage
+* R1 → protection resistor
+* M1 → MOSFET instance
+* VDS → drain supply
+* VSS → source/substrate ground
+
+**Why SPICE??**
+* Automates sweeps (VGS, VDS) → no manual calculation for every combination.
+* Provides accurate ID, voltage waveforms using real models.
+
+### **SPICE Netlist**
+
+* First step: Define nodes (points with no obstruction between components → same potential).
+* Components connect between nodes (e.g., resistor between two nodes, MOSFET between four nodes).
+
+Example Circuit Values
+
+<img width="752" height="556" alt="image" src="https://github.com/user-attachments/assets/4ab83cc5-eb9e-473d-a206-845d812424c1" />
+
+* VDD = 2.5 V
+* Vin (gate voltage) = variable (e.g., sweep)
+* Protection resistor R1 = 55 Ω
+* W = 1.8 μm, L = 1.2 μm (long channel to start)
+* VSS = 0 V (ground)
+
+Node Definitions (4 Nodes)
+
+<img width="614" height="434" alt="image" src="https://github.com/user-attachments/assets/f51c92dd-7786-41c8-ad85-759b3a9813ff" />
+
+
+* Node "in" → gate input side (Vin to R1)
+* Node "n1" → between R1 and gate of MOSFET
+* Node "vdd" → drain supply (VDD to drain)
+* Node "0" → ground (source, substrate, VSS)
+
+**SPICE Netlist Lines**
+
+<img width="1385" height="474" alt="image" src="https://github.com/user-attachments/assets/669aa66a-e1ff-4866-84c9-70cbe534709e" />
+
+**MOSFET (M1)**
+  * M1 vdd n1 0 0 nmos W=1.8u L=1.2u
+    * Order: drain gate source substrate (DGSS)
+    * "nmos" = model name from technology file
+
+**Resistor (R1)**
+  * R1 in n1 55
+    * Between nodes "in" and "n1", value 55 Ω
+
+**Voltage Sources**
+* Vdd vdd 0 2.5
+  * Positive terminal vdd, negative 0, value 2.5 V
+
+* Vin in 0 [value/sweep]
+  * Positive in, negative 0
+
+
+
+
+
+
+
 
 
 
