@@ -515,6 +515,281 @@ Node Definitions (4 Nodes)
 * Model inclusion → .lib statement to load technology file.
 * Simulation commands → control what to sweep/measure.
 
+**Example SPICE netlist:**
+
+<img width="508" height="461" alt="image" src="https://github.com/user-attachments/assets/727f4f68-6327-4072-abde-b475effe8dff" />
+
+**Running & Plotting**
+
+<img width="1217" height="782" alt="image" src="https://github.com/user-attachments/assets/b475c6b6-1801-401c-92af-034b2917ba6c" />
+
+**Behavior observed:**
+* Low VDS → linear region (ID increases linearly with VDS).
+* Higher VDS → quadratic/saturation region (curves bend, ID becomes nearly constant).
+
+**Another example:** 
+
+<img width="564" height="611" alt="image" src="https://github.com/user-attachments/assets/91c19a68-bbc8-41c0-b537-55a4156b285e" />
+
+
+**Running & Plotting**
+
+<img width="1171" height="740" alt="Screenshot 2026-02-24 183746" src="https://github.com/user-attachments/assets/f44bdb42-6bc8-4ed4-8a87-00ad5e8ac0d1" />
+
+<img width="1124" height="677" alt="Screenshot 2026-02-24 183823" src="https://github.com/user-attachments/assets/5905e3b0-6682-412f-ab21-8ce0d2509d69" />
+
+
+
+## **SPICE simulation for lower nodes**
+
+
+**Objective**
+* Simulate and compare long-channel (L = 1.2 µm) vs short-channel (L ≈ 0.15–0.25 µm) NMOS using Sky130 PDK to observe short-channel effects.
+
+* Velocity Saturation → Id-Vgs becomes linear at high Vgs (instead of quadratic).
+* Idsat ≈ W × Cox × (Vgs – Vt) × v_sat (velocity-limited, L-independent).
+* Reduced Drive Current → Same W/L → short-channel Id is ~50% lower.
+
+Example: W/L = 1.5
+* Long: ~410 µA peak
+* Short: ~210 µA peak
+
+* Earlier Saturation → Vdsat smaller → flattens at lower Vds.
+* Channel Length Modulation (λ) → Slight Id increase with Vds in saturation.
+* Equation: Id = (kn/2) × (Vgs – Vt)² × (1 + λ Vds)
+* Vt Roll-off → Slight reduction due to DIBL (short-channel effect).
+
+Waveform Observations
+
+<img width="2177" height="1339" alt="image" src="https://github.com/user-attachments/assets/121c5770-259f-4feb-82f4-0f663be77356" />
+
+* Id-Vds Family Curves
+* Linear region (low Vds): Id rises linearly
+* Transition at Vds ≈ Vgs – Vt (pinch-off)
+* Saturation: Id flattens (short-channel earlier & lower peak)
+* Slight upward slope due to λ
+
+
+## **Id–Vgs Behavior: Long-Channel vs Short-Channel MOSFETs**
+
+Id–Vgs (drain current vs gate-to-source voltage) plots reveal how MOSFET drive current changes with gate bias. Long-channel and short-channel devices behave very differently due to velocity saturation and other short-channel effects.
+
+<img width="2420" height="940" alt="image" src="https://github.com/user-attachments/assets/1fac94b3-1359-4a96-a6b6-e3cb31bcf493" />
+
+
+**SPICE Setup**
+
+* Model: .include sky130.lib.spice tt (typical corner)
+* Sweep: .dc Vgs 0 1.8 0.05 Vds 1.8 (fixed Vds in saturation, sweep Vgs)
+* MOSFET: M1 drain gate source bulk nfet01 W=__u L=__u
+* Use pre-characterized W/L from cell library.
+
+* **Long-Channel Behavior** (e.g., L = 1.2 µm, W/L = 1.5)
+
+Follows classical square-law model.
+
+**In saturation:**
+
+**Id = (kn / 2) × (Vgs – Vt)² × (1 + λ Vds)**
+
+* Id–Vgs plot: Quadratic rise above threshold (parabolic shape).
+* Current increases rapidly with Vgs (strong gate control).
+* Peak Id higher (e.g., ~410 µA at Vgs = 1.8 V, Vds = 1.8 V).
+
+<img width="1376" height="1104" alt="image" src="https://github.com/user-attachments/assets/3dbf4333-b2d6-402c-9fb8-c7d0a32c3545" />
+
+
+* **Short-Channel Behavior** (e.g., Sky130, L ≈ 0.15–0.25 µm, W/L = 1.5)
+
+  * Velocity saturation dominates at high lateral fields.
+  * Carrier velocity caps at v_sat → Id no longer follows square-law.
+
+<img width="1377" height="1098" alt="image" src="https://github.com/user-attachments/assets/f09c96da-bbb7-4939-953f-634d18bd9d62" />
+
+    
+ **In saturation:**
+ 
+  * Idsat ≈ W × Cox × (Vgs – Vt) × v_sat
+  * Id–Vgs plot: Linear rise at high Vgs (straight line instead of parabola).
+  * Peak Id significantly lower (e.g., ~210 µA at same Vgs/Vds → ~50% reduction).
+  * Earlier onset of saturation-like behavior even in moderate Vgs.
+
+
+<img width="2352" height="927" alt="image" src="https://github.com/user-attachments/assets/0b09a4b4-57f7-4813-a970-faa887761718" />
+
+
+
+## **Velocity Saturation at Lower vs Higher Electric Fields (Short-Channel MOSFETs)**
+
+* Velocity saturation is a key short-channel effect that limits carrier velocity in high electric fields, causing deviation from long-channel square-law behavior.
+
+<img width="2400" height="954" alt="image" src="https://github.com/user-attachments/assets/b3ade936-5c01-48c3-99c6-0c13b7f2c5b9" />
+
+
+<img width="1126" height="668" alt="image" src="https://github.com/user-attachments/assets/72242db4-9851-4cf3-8997-df9cfb3c3e68" />
+
+
+At Lower Electric Fields (Long-Channel / Low Vds or Long L)
+
+* Electric field E = Vds / L is low → carriers accelerate linearly.
+* Drift velocity v = μ_n × E → increases with field.
+
+Id follows classical model:
+
+* Linear region: Id ∝ Vds
+* Saturation: Id ∝ (Vgs – Vt)²
+
+* Id–Vgs plot: Quadratic rise above Vt.
+* No velocity limit → current scales well with gate overdrive.
+
+At Higher Electric Fields (Short-Channel / High Vds or Short L)
+
+* E = Vds / L becomes very high in scaled devices (short L).
+* Carrier velocity saturates at v_sat (~10⁷ cm/s for electrons in silicon) due to phonon scattering.
+* v = v_sat (constant) instead of μ_n × E.
+* Id becomes velocity-limited:
+* Idsat ≈ W × Cox × (Vgs – Vt) × v_sat
+* Id–Vgs plot: Linear rise at high Vgs (loses quadratic dependence).
+* Peak Id significantly lower than long-channel prediction for same W/L.
+
+<img width="1000" height="235" alt="image" src="https://github.com/user-attachments/assets/3bd1d60d-cf69-411a-aa47-ded9ff01ce4a" />
+
+
+**Modelling the velocity**
+
+Boundary conditions:
+
+* For electric field E ≤ Ec (critical field): Electron velocity vn increases linearly with electric field
+* For electric field E ≥ Ec: Electron velocity reaches saturation velocity (vsat) and becomes approximately constant
+
+<img width="804" height="152" alt="image" src="https://github.com/user-attachments/assets/370693bd-0bdb-418a-91fc-a5e50c0b6e42" />
+
+
+**SPICE Observations**
+
+* Long-channel (L = 1.2 µm): Quadratic Id–Vgs curve.
+* Short-channel (L ≈ 0.15–0.25 µm): Transitions to linear Id–Vgs at high Vgs.
+* Result: Reduced drive current (~50% lower peak Id), earlier saturation onset.
+* Equation shift: From square-law → linear in high-field regime.
+
+
+## **Velocity saturation drain current model**
+
+* Vgt = Vgs – Vt, This is the gate overdrive voltage. We use Vgt when analyzing the device at high gate voltages (strong inversion region).
+* Drain current equations are expressed using Vgt rather than Vgs.
+* For small Vds, we usually neglect the channel length modulation term (λVds) to simplify analysis.
+
+* Vdsat — a process/technology parameter
+  * It is the drain-to-source voltage where velocity saturation starts.
+  * When Vds exceeds Vdsat, carrier velocity reaches its maximum and stops increasing with electric field.
+  * This causes the drain current to deviate from the classical quadratic (long-channel) behavior.
+
+<img width="1725" height="627" alt="image" src="https://github.com/user-attachments/assets/487f711a-e77b-4b1a-8f09-2b3b132cfb2b" />
+
+<img width="1622" height="626" alt="image" src="https://github.com/user-attachments/assets/46de5e9d-a6d9-4008-a6df-2943d8ebed71" />
+
+
+**Why Saturation Current is Smaller in Lower Technology Nodes??**
+
+* In advanced (short-channel) nodes, saturation current is smaller than expected — not larger as simple scaling might suggest.
+* Main reason: Velocity saturation effect becomes much stronger in short-channel transistors.
+* Short channel length means even a modest Vds creates a very high electric field along the channel (E = Vds / L is large).
+* Carriers quickly reach their maximum velocity (v_sat ≈ 10⁷ cm/s for electrons) due to phonon scattering.
+* Once velocity saturates, it cannot increase further — drain current no longer grows proportionally with Vgs or Vds.
+* Result: Peak saturation current is significantly lower compared to long-channel devices with the same W/L ratio.
+
+<img width="1725" height="735" alt="image" src="https://github.com/user-attachments/assets/781908ea-5c2e-46b3-885c-982ad98d5de2" />
+
+
+### **Drain Current Models**
+
+* **Long-Channel (No Velocity Saturation)**
+  * Low electric field → carrier velocity proportional to field (v = μ_n × E).
+  * Saturation current: Id = (kn / 2) × Vgt² × (1 + λ Vds)
+  * Quadratic dependence on Vgt.
+
+* **Velocity Saturation (Short-Channel / High Field)**
+  * High electric field → velocity capped at v_sat.
+  * Saturation current becomes: Idsat ≈ W × Cox × Vgt × v_sat
+  * Linear dependence on Vgt (no longer quadratic).
+  * Independent of channel length L.
+
+
+## **Labs Sky130 Id-Vgs**
+
+In this SPICE simulation, a short-channel NMOS device with a channel length of around 0.12–0.15 µm is analysed at a supply voltage of 1.8 V. The drain voltage VDS is swept from 0 to 1.8 V with a step of 0.1 V, while the gate voltage VGS is swept in steps of 0.2 V to generate the ID–VDS characteristics.
+
+<img width="2148" height="1512" alt="bcfha" src="https://github.com/user-attachments/assets/73bee55a-27c4-4150-9916-41000e2c1183" />
+
+
+* For lower values of Vgs (just above Vt), the drain current shows a quadratic behavior with respect to (Vgs − Vt).
+* For higher values of Vgs, the behavior becomes more linear, mainly due to velocity saturation effects in short-channel devices.
+* Peak current is about 197uA
+
+
+## **Labs Sky130 Vt**
+
+* Open day2_nfet_idvgs_L015_W039.spice
+* Run ngspice
+* Plot Id current (vdd-branch)
+
+<img width="989" height="795" alt="image" src="https://github.com/user-attachments/assets/99191f88-3692-4572-94d7-f4823899541b" />
+
+
+* Threshold voltage (Vt) is obtained by drawing a tangent at the maximum slope of the Id–Vgs curve and extending it to intersect the Vgs axis
+* Threshold voltage, Vt=0.737V
+
+
+
+# **7.CMOS Voltage Transfer Characteristics (VTC)**
+
+**MOSFET as a Switch**
+
+* NMOS or PMOS transistor acts like a voltage-controlled switch.
+* Condition to turn ON: |VGS| ≥ |Vt|
+  * NMOS: VGS ≥ Vt (positive) → channel forms → low resistance (RON) between source-drain.
+  * PMOS: VGS ≤ Vt (negative) → channel forms → low resistance.
+
+* When |VGS| < |Vt| → transistor OFF → very high resistance (open circuit) → no current from source to drain.
+
+<img width="1088" height="631" alt="image" src="https://github.com/user-attachments/assets/8969689c-4664-4e77-8251-4a5281e431cc" />
+
+**CMOS Inverter Structure**
+
+* Complementary MOS: PMOS (pull-up) at top + NMOS (pull-down) at bottom.
+
+<img width="525" height="460" alt="image" src="https://github.com/user-attachments/assets/782e7f7c-5ef8-41b3-826c-3c3a8c623436" />
+
+* Connections:
+  * PMOS source → VDD
+  * NMOS source → VSS (ground)
+  * Gates of both tied together → input (Vin)
+  * Drains of both tied together → output (Vout)
+  * Load capacitance (CL) at Vout (includes next gate + wire cap).
+
+
+**Case 1: Vin = VDD (Logic High)**
+
+* NMOS: VGS = VDD – VSS = VDD (> Vt) → NMOS ON → acts as low resistance → Vout pulled to VSS (≈ 0 V) → Logic Low output.
+* PMOS: VGS = VDD – VDD = 0 V (less than |Vt|) → PMOS OFF → open circuit from VDD.
+* **Result:** Vout = 0 V (strong pull-down by NMOS).
+
+**Case 2: Vin = 0 V (Logic Low)**
+
+* NMOS: VGS = 0 – VSS = 0 V (< Vt) → NMOS OFF → open circuit.
+* PMOS: VGS = 0 – VDD = –VDD (< Vt) → PMOS ON → acts as low resistance → Vout pulled to VDD → Logic High output.
+* Result: Vout = VDD (strong pull-up by PMOS).
+
+
+<img width="1553" height="861" alt="image" src="https://github.com/user-attachments/assets/716d64a4-706d-4302-9e95-19014eb5bf84" />
+
+
+### **Note: Why Complementary??**
+* When one transistor is ON, the other is OFF → no static DC path from VDD to ground → zero static power (ideally).
+
+
+
+
 
 
 
