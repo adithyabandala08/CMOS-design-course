@@ -938,28 +938,70 @@ Node out: Vout (output)
 
 **Typical SPICE Netlist Structure**
 
-* .include sky130.lib.spice tt
 
-* PMOS (pull-up)
-  * M1 vdd in out out pfet W=0.375u L=0.25u
+<img width="738" height="249" alt="image" src="https://github.com/user-attachments/assets/626c38bf-d46e-4059-a57c-3e5bab267299" />
 
-* NMOS (pull-down)
-  * M2 out in 0 0 nfet W=0.375u L=0.25u
 
-* Supply voltages
-  * Vdd vdd 0 2.5
-  * Vin will be swept in .dc command
+<img width="531" height="361" alt="image" src="https://github.com/user-attachments/assets/473928cc-9438-4556-9f9f-e186659c08b5" />
 
-* Load capacitance
-  * Cload out 0 10f
 
-* DC sweep for VTC
-  * .dc Vin 0 2.5 0.05
-  * .plot V(out)
 
+**Case 1: Balanced W/L (Same for NMOS & PMOS)**
+* Transistor sizes:
+  * NMOS: W = 0.9 µm, L = 0.6 µm (W/L = 1.5)
+  * PMOS: W = 0.9 µm, L = 0.6 µm (W/L = 1.5)
+
+* Input sweep: Vin from 0 V to 2.5 V
+* Step size: 0.05 V
+* Purpose: Observe baseline VTC with equal W/L ratio for NMOS and PMOS.
+
+<img width="821" height="788" alt="vtc_!" src="https://github.com/user-attachments/assets/dc211833-d1ea-421e-a70f-8e8acf85ab25" />
+
+
+**Case 2: Realistic W/L (PMOS Wider for Balanced Drive)**
+* Transistor sizes:
+  * NMOS: W = 0.9 µm, L = 0.6 µm (W/L = 1.5)
+  * PMOS: W = 3.0 µm, L = 0.6 µm (W/L = 5.0)
+
+* Input sweep: Vin from 0 V to 2.5 V
+* Step size: 0.05 V
+* Purpose: Simulate more realistic inverter with PMOS wider than NMOS (due to lower hole mobility) → better rise/fall time symmetry.
+
+<img width="806" height="790" alt="vtc_2" src="https://github.com/user-attachments/assets/e752b392-28ce-49ee-a036-5bd1793b87a5" />
+
+
+### **Labs – Sky130 SPICE Simulation for CMOS Inverter**
+
+**Objective**
+* Perform DC and transient simulations in Sky130 PDK to obtain:
+
+  * Voltage Transfer Characteristic (VTC) curve
+  * Switching threshold voltage
+  * Rise and fall delays
+
+**DC Simulation – VTC & Switching Threshold**
+
+* Used Sky130 library (typical corner)
+* Inverter sizing: NMOS & PMOS with appropriate W/L ratios
+* DC sweep: Vin from 0 to 1.8 V (or as configured)
+* Result: VTC waveform (Vout vs Vin)
+* Switching threshold (Vin = Vout point):
+  * From previous lecture calculations: ≈ 1.07479 V
+  * Observed around the midpoint of sharp transition region on VTC plot
  
-* .end
+<img width="830" height="783" alt="Vtc_3" src="https://github.com/user-attachments/assets/9a0747e2-5c6d-4ed7-8f69-fa0e69c3f146" />
 
+**Transient Analysis – Rise & Fall Delay**
+
+* Input: Pulse from 0 to 1.8 V
+* Measured at 50% voltage point (Vdd/2 = 0.9 V)
+* Rise delay:
+  * Time from Vin reaching 0.9 V to Vout reaching 0.9 V (rising edge)
+  * Calculated: 2.4833 ns – 2.1511 ns = 0.3321 ns
+* Fall delay:
+  * Time from Vin reaching 0.9 V to Vout reaching 0.9 V (falling edge)
+  * Calculated: 4.3360 ns – 4.0495 ns = 0.2865 ns
+* Propagation delay ≈ average of rise + fall delays
 
 
 
