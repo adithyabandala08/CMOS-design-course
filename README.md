@@ -774,18 +774,207 @@ In this SPICE simulation, a short-channel NMOS device with a channel length of a
 * PMOS: VGS = VDD – VDD = 0 V (less than |Vt|) → PMOS OFF → open circuit from VDD.
 * **Result:** Vout = 0 V (strong pull-down by NMOS).
 
+ <img width="1553" height="861" alt="image" src="https://github.com/user-attachments/assets/716d64a4-706d-4302-9e95-19014eb5bf84" />
+
+
 **Case 2: Vin = 0 V (Logic Low)**
 
 * NMOS: VGS = 0 – VSS = 0 V (< Vt) → NMOS OFF → open circuit.
 * PMOS: VGS = 0 – VDD = –VDD (< Vt) → PMOS ON → acts as low resistance → Vout pulled to VDD → Logic High output.
 * Result: Vout = VDD (strong pull-up by PMOS).
 
-
-<img width="1553" height="861" alt="image" src="https://github.com/user-attachments/assets/716d64a4-706d-4302-9e95-19014eb5bf84" />
-
+<img width="1529" height="864" alt="image" src="https://github.com/user-attachments/assets/95b33a20-539c-4458-869f-c07334c54093" />
 
 ### **Note: Why Complementary??**
 * When one transistor is ON, the other is OFF → no static DC path from VDD to ground → zero static power (ideally).
+
+<img width="1495" height="788" alt="image" src="https://github.com/user-attachments/assets/cf6ea1e6-4b3e-4e57-9377-0b0233ea8105" />
+
+* When Vin = Vdd:
+* Direct discharging path: Vout → Rn → Vss
+* CL discharges → Vout falls to 0 V
+
+* When Vin = 0 V:
+* Direct charging path: Vdd → Rp → Vout
+* CL charges → Vout rises to Vdd
+
+
+<img width="1511" height="780" alt="image" src="https://github.com/user-attachments/assets/2e421430-546d-4fd7-ac26-e2c8891723fb" />
+
+* G = Gate (both PMOS & NMOS)
+* S = Source (PMOS → Vdd, NMOS → Vss)
+* D = Drain (both connected to Vout)
+
+
+* **Vgs = Gate-to-Source voltage**
+  * NMOS: VgsN = Vin – Vss
+  * PMOS: VgsP = Vin – Vdd
+
+* **Vds = Drain-to-Source voltage**
+  * NMOS: VdsN = Vout – Vss
+  * PMOS: VdsP = Vout – Vdd
+
+* **Ids = Drain-to-Source current**
+  * IdsN = current through NMOS (pull-down)
+  * IdsP = current through PMOS (pull-up)
+
+### **Load Curves & Current Directions**
+
+* **NMOS Load Curve (Idsn vs Vdsn)**
+
+  * Vgsn = Vin – Vss = Vin (since Vss = 0)
+  * Vdsn = Vout – Vss = Vout
+  * Plot: Idsn (positive) vs Vdsn (positive)
+  * At Vgsn = 0 (< Vt) → Idsn ≈ 0 (NMOS off)
+  * As Vgsn increases above Vt → Idsn rises
+    * Low Vdsn → linear region
+    * Higher Vdsn → saturation region (flattens)
+  * Multiple curves for different Vgsn values (higher Vgsn → higher Idsn).
+
+* **PMOS Load Curve (Idsp vs Vdsp)**
+
+  * Vdsp = Vout – Vdd (negative when Vout < Vdd)
+  * Vgsp = Vin – Vdd (negative when Vin < Vdd)
+  * Idsp is negative of Idsn (opposite current direction).
+  * Plot: Idsp (negative) vs Vdsp (negative) → mirrored & flipped quadrant.
+  * When |Vgsp| > |Vt| (Vgsp more negative) → PMOS on → |Idsp| increases.
+  * Shape similar to NMOS but inverted:
+    * Low |Vdsp| → linear
+    * Higher |Vdsp| → saturation
+
+<img width="1563" height="871" alt="image" src="https://github.com/user-attachments/assets/3fa16733-d427-460f-b0eb-0a881cf7eb30" />
+
+**Current Directions in CMOS Inverter**
+
+**Vin = Vdd (High):**
+* NMOS on → Idsn flows from Vout → Vss (downward, discharging CL) → Vout falls to 0 V.
+* PMOS off → no current from Vdd.
+
+**Vin = 0 V (Low):**
+* PMOS on → Idsp flows from Vdd → Vout (upward, charging CL) → Vout rises to Vdd.
+* NMOS off → no current to Vss.
+
+* Idsn and Idsp are opposite: Idsp = –Idsn (directions cancel in steady state).
+
+Current direction in CMOS Invertor: 
+
+<img width="544" height="227" alt="image" src="https://github.com/user-attachments/assets/20e24ff3-9f5e-46ac-99c5-878a78223f33" />
+
+
+### **CMOS Inverter – Load Curves Conversion for VTC**
+
+**Objective**
+
+* Convert NMOS & PMOS Id-Vds load curves into a form that depends only on Vin and Vout (no internal Vgsp, Vdsp, etc.) → used to derive full Voltage Transfer Characteristic (VTC) curve of CMOS inverter.
+
+Key Observations from Previous Lectures
+
+* NMOS Idsn-Vdsn curves: positive Idsn, Vgsn = Vin, Vdsn = Vout
+* PMOS Idsp-Vdsp curves: negative Idsp, Vgsp = Vin – Vdd, Vdsp = Vout – Vdd
+* Idsp = –Idsn (opposite direction due to current flow)
+* Internal voltages (Vgsp, Vdsp) are not visible in digital design → only Vin and Vout matter.
+
+Step-by-Step: Load Curves → VTC Ready
+
+1. Vgsp = Vin – Vdd → Vin = Vgsp + Vdd
+2. Idsp = –Idsn (flip direction)
+3. Shift PMOS curve: Plot |Idsp| = Idsn at corresponding Vin
+
+
+<img width="1553" height="854" alt="image" src="https://github.com/user-attachments/assets/192f6a30-97cc-4a92-a6ad-70fac9e0a357" />
+
+4. Replace Vdsp with Vout → Vout = Vdsp + Vdd **(Load curve for PMOS)**
+
+<img width="1549" height="513" alt="image" src="https://github.com/user-attachments/assets/094af2e6-3af0-4b3e-9094-d1df7cc43c7a" />
+
+5. Do the same to obtain load curve for NMOS
+
+<img width="558" height="502" alt="image" src="https://github.com/user-attachments/assets/6e9bf260-3f20-4ac2-b39a-1182fdf4e6c5" />
+
+6. Create VTC graph:
+* X-axis: Vin (0 to Vdd, e.g., 0 to 2 V)
+* Y-axis: Vout (0 to Vdd)
+* For each Vin value:
+  * Find intersection point between NMOS and PMOS curves at that Vin.
+  * Plot (Vin, Vout) on VTC graph.
+ 
+<img width="1548" height="444" alt="image" src="https://github.com/user-attachments/assets/5fd0fc88-bf82-4255-87af-f0e0b06f36f6" />
+
+### **VTC Regions (Vdd = 2 V)**
+
+| Vin     | Vout       | NMOS State    | PMOS State    | Region                  |
+|---------|------------|---------------|---------------|-------------------------|
+| 0 V     | ≈ 2 V      | Cutoff        | Linear        | Logic High              |
+| 0.5 V   | 1.5–2 V    | Saturation    | Linear        | High                    |
+| 1.0 V   | 0.5–1.5 V  | Saturation    | Saturation    | High Gain / Transition  |
+| 1.5 V   | 0–0.5 V    | Linear        | Saturation    | Low                     |
+| 2.0 V   | ≈ 0 V      | Linear        | Cutoff        | Logic Low               |
+
+7. Connect the points → get S-shaped VTC curve.
+
+
+<img width="543" height="424" alt="image" src="https://github.com/user-attachments/assets/99a1d0ff-e8ea-497c-a17c-74b5605ad830" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
