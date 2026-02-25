@@ -1003,18 +1003,122 @@ Node out: Vout (output)
   * Calculated: 4.3360 ns – 4.0495 ns = 0.2865 ns
 * Propagation delay ≈ average of rise + fall delays
 
+### **CMOS Inverter – VTC Analysis & Switching Threshold (Vm)**
+
+1. VTC Waveform Comparison
+
+* Case 1: Equal W/L for NMOS & PMOS (W = 0.375 µm, L = 0.25 µm, W/L = 1.5 for both)
+* Case 2: PMOS wider (Wp = 0.9375 µm = 2.5 × Wn, Wn = 0.375 µm, L = 0.25 µm, W/L PMOS = 3.75)
+* Result: VTC shape remains very similar in both cases — S-shaped transition from Vdd to 0 V.
+
+2. Robustness of CMOS Inverter
+
+* Regardless of PMOS/NMOS sizing ratio, the fundamental behavior stays the same:
+* Vin = 0 → Vout = Vdd
+* Vin = Vdd → Vout = 0
+
+* CMOS inverter is extremely robust - core logic function is preserved across different sizes.
+* That's why CMOS is the most widely used logic family.
+
+<img width="1492" height="793" alt="image" src="https://github.com/user-attachments/assets/0ce9cd99-9d3d-4019-b35d-3f98b8cb31f4" />
+
+3. Switching Threshold (Vm or Vth)
+
+* Definition: Point where Vin = Vout (intersection of VTC with 45° line).
+* Method: Draw Vin = Vout line on VTC plot → find intersection.
+* Results:
+  * Case 1 (equal W/L): Vm ≈ 0.9 V
+  * Case 2 (PMOS 2.5× wider): Vm ≈ 1.2 V
+* Vm shifts right when PMOS is wider (stronger pull-up → higher input needed to balance).
+
+4. Critical Region – Both Transistors in Saturation
+
+* Around Vm (transition region):
+  * Both NMOS and PMOS are in saturation (fully turned ON).
+  * Direct current path from Vdd → PMOS → NMOS → ground → short-circuit current flows.
+  * High current leakage in this region (static power dissipation).
+  * High gain (small ΔVin → large ΔVout) — good for analog, but power-hungry for digital.
 
 
+<img width="1253" height="571" alt="image" src="https://github.com/user-attachments/assets/5f0fc143-1786-413d-95d2-16a4ea697fde" />
 
 
+### **CMOS Inverter – Analytical Derivation of Switching Threshold (Vm)**
+
+**Assumptions for Derivation**
+
+* Long-channel model (velocity saturation region)
+* Ignore channel length modulation (λ ≈ 0 → 1 + λVds ≈ 1)
+* Vgt = Vgs – Vt (gate overdrive)
+* At Vm: VgsN = Vm (NMOS), VgsP = Vm – Vdd (PMOS)
+* VdsN = Vm (NMOS), VdsP = Vm – Vdd (PMOS)
+
+**Drain Current Equations at Vm**
+
+* NMOS (Idsn):
+  * Idsn = kn × (VgsN – Vtn) × Vdsatn – (Vdsatn² / 2)
+  * Substitute: VgsN = Vm, Vtn = Vt (NMOS threshold)
+  * Idsn = kn × (Vm – Vtn) × Vdsatn – (Vdsatn² / 2)
+ 
+<img width="998" height="284" alt="image" src="https://github.com/user-attachments/assets/309e579b-4088-4a23-ab24-dde3de44bb7b" />
+
+* PMOS (Idsp):
+  * Idsp = kp × (VgsP – |Vtp|) × Vdsatp – (Vdsatp² / 2)
+  * Substitute: VgsP = Vm – Vdd, Vtp = |Vt| (PMOS threshold)
+  * Idsp = kp × (Vm – Vdd – |Vtp|) × Vdsatp – (Vdsatp² / 2)
+ 
+<img width="682" height="330" alt="image" src="https://github.com/user-attachments/assets/6b983b19-934a-4a16-ae8c-3d268e2713bf" />
+ 
+* Condition: Idsn + Idsp = 0
+
+**Solving for Vm**
+
+* Set Idsn = –Idsp
+* Substitute kn = μn Cox (W/L)n, kp = μp Cox (W/L)p
+* After simplification (ignoring small terms):
+* Vm = [constant × Vdd] / [1 + constant]
+* where constant depends on kn/kp ratio (i.e., (W/L)n / (W/L)p, μn/μp, Vdsatn/Vdsatp, etc.)
 
 
+<img width="1495" height="808" alt="image" src="https://github.com/user-attachments/assets/e0b15af1-a495-4f39-be9e-534d0b3478a2" />
 
 
+### **Vm Definition**
+* Vm = point where Vin = Vout on VTC (switching threshold).
+
+At Vm, 
+
+* Both NMOS & PMOS in saturation
+* Idsn + Idsp = 0 (equal magnitude, opposite direction)
+
+Drain Current at Vm, 
+
+* Idsn = kn × (Vm – Vtn) × Vdsatn – (Vdsatn² / 2)
+* Idsp = kp × (Vm – Vdd – |Vtp|) × Vdsatp – (Vdsatp² / 2)
+
+Simplifications,
+
+* Ignore λVds (≈ 0)
+* VgsN = Vm, VdsN = Vm
+* VgsP = Vm – Vdd, VdsP = Vm – Vdd
+
+<img width="410" height="318" alt="image" src="https://github.com/user-attachments/assets/e9b418b3-c351-4ea8-a1bd-7d01ff380fa3" />
+
+Solving for Vm, 
+
+* Idsn + Idsp = 0 → Vm = [constant × Vdd] / [1 + constant]
+* Constant ∝ kn/kp ratio = (μn/μp) × (W/L)n / (W/L)p
+* Results (Examples)
+* Wp/Wn = 1 → Vm ≈ 0.9 V
+* Wp/Wn = 2.5 → Vm ≈ 1.2 V
+* Wider PMOS → higher Vm
+
+Reverse Design, 
+* Set desired Vm (e.g., Vdd/2 = 1.25 V) → solve for required Wp/Wn ratio
+* Applications: Clock inverters need Vm ≈ Vdd/2 → balanced rise/fall
 
 
-
-
+<img width="732" height="425" alt="image" src="https://github.com/user-attachments/assets/63e0ebdc-a833-4cdf-883e-63a0a33179e5" />
 
 
 
