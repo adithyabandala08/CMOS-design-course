@@ -916,6 +916,52 @@ Step-by-Step: Load Curves → VTC Ready
 <img width="543" height="424" alt="image" src="https://github.com/user-attachments/assets/99a1d0ff-e8ea-497c-a17c-74b5605ad830" />
 
 
+## **SPICE deck creation for CMOS inverter**
+
+**SPICE Deck Components**
+
+**Transistors:**
+* PMOS: W = 0.375 µm, L = 0.25 µm (or scaled)
+* NMOS: W = 0.375 µm, L = 0.25 µm (same size for simplicity; ideally PMOS 2–3× wider)
+* Supply voltages: Vdd = 2.5 V (typical for 250 nm node)
+* Input sweep: Vin from 0 to 2.5 V
+* Model include: .include sky130.lib.spice tt (or equivalent technology file)
+
+<img width="1531" height="844" alt="image" src="https://github.com/user-attachments/assets/65b00c44-4f93-48cb-8693-36856aa2c284" />
+
+Node Naming (Important for SPICE)
+
+Node 0: Vss / ground (common)
+Node vdd: Vdd supply
+Node in: Vin (input)
+Node out: Vout (output)
+
+**Typical SPICE Netlist Structure**
+
+* .include sky130.lib.spice tt
+
+* PMOS (pull-up)
+  * M1 vdd in out out pfet W=0.375u L=0.25u
+
+* NMOS (pull-down)
+  * M2 out in 0 0 nfet W=0.375u L=0.25u
+
+* Supply voltages
+  * Vdd vdd 0 2.5
+  * Vin will be swept in .dc command
+
+* Load capacitance
+  * Cload out 0 10f
+
+* DC sweep for VTC
+  * .dc Vin 0 2.5 0.05
+  * .plot V(out)
+
+ 
+* .end
+
+
+
 
 
 
