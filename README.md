@@ -1120,15 +1120,19 @@ Reverse Design,
 
 <img width="732" height="425" alt="image" src="https://github.com/user-attachments/assets/63e0ebdc-a833-4cdf-883e-63a0a33179e5" />
 
+## **CMOS Inverter – Switching Threshold (Vm) & Delay Variation**
 
+**Transient Analysis - Rise & Fall Delay**
 
+* Input pulse: 
 
+<img width="533" height="384" alt="image" src="https://github.com/user-attachments/assets/1d6fb775-d972-497e-bbe6-c909c80e12f4" />  <img width="309" height="223" alt="image" src="https://github.com/user-attachments/assets/c4e83a4f-0c16-48e4-8f86-6a6134c143f7" />
 
+Rise and Fall delay:
 
+<img width="1259" height="602" alt="image" src="https://github.com/user-attachments/assets/4c620c80-1b3e-48f0-8320-9f9fbcc95e49" />
 
-
-
-
+Propagation delay ≈ average of rise + fall
 
 
 
