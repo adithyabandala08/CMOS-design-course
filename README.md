@@ -1120,38 +1120,206 @@ Reverse Design,
 
 <img width="732" height="425" alt="image" src="https://github.com/user-attachments/assets/63e0ebdc-a833-4cdf-883e-63a0a33179e5" />
 
-## **CMOS Inverter – Switching Threshold (Vm) & Delay Variation**
+## **CMOS Inverter - Switching Threshold (Vm) & Delay Variation with PMOS Sizing**
 
-**Transient Analysis - Rise & Fall Delay**
+**Experiment Overview**
+
+We ran multiple SPICE simulations in Sky130 PDK to study how the Voltage Transfer Characteristic (VTC), switching threshold (Vm), and rise/fall delays change when we increase the PMOS width (Wp) relative to NMOS width (Wn), while keeping channel length (L = 0.25 µm) constant.
+
+**Fixed Parameters Across All Cases:**
+
+* NMOS: Wn = 0.375 µm, L = 0.25 µm → W/L = 1.5, Vdd = 1.8 V
+* DC sweep: Vin from 0 to 1.8 V, step 0.05 V → VTC plot
+* Transient: Pulse input → delay measured at 50% Vdd = 0.9 V
+* Load capacitance (CL) = 50 fF (assumed)
 
 * Input pulse: 
 
 <img width="533" height="384" alt="image" src="https://github.com/user-attachments/assets/1d6fb775-d972-497e-bbe6-c909c80e12f4" />  <img width="309" height="223" alt="image" src="https://github.com/user-attachments/assets/c4e83a4f-0c16-48e4-8f86-6a6134c143f7" />
 
-Rise and Fall delay:
+**Case-by-Case Results**
+
+**Case 1: Wp/Wn = 1× (equal sizing)**
+
+* PMOS: Wp = 0.375 µm, L = 0.25 µm → W/L = 1.5
+* Switching threshold (Vm): ≈ 0.99 V
+* Rise delay: 148 ps
+* Fall delay: 71 ps
+* Observation: Vm close to Vdd/2 (0.9 V), but rise delay much higher than fall delay (PMOS weaker).
 
 <img width="1259" height="602" alt="image" src="https://github.com/user-attachments/assets/4c620c80-1b3e-48f0-8320-9f9fbcc95e49" />
+
 
 Propagation delay ≈ average of rise + fall
 
 
+**Case 2: Wp/Wn = 2×**
+
+* PMOS: Wp = 0.75 µm, L = 0.25 µm → W/L = 3.0
+* Switching threshold (Vm): ≈ 1.2 V
+* Rise delay: 80 ps
+* Fall delay: 76 ps
+* Observation: Vm shifts higher, rise delay decreases significantly, fall delay increases slightly → better balance.
+
+**Case 3: Wp/Wn = 3×**
+
+* PMOS: Wp = 1.125 µm, L = 0.25 µm → W/L = 4.5
+* Switching threshold (Vm): ≈ 1.25 V
+* Rise delay: 57 ps
+* Fall delay: 80 ps
+* Observation: Vm very close to Vdd/2 (ideal for symmetric switching), delays more balanced.
+
+**Case 4: Wp/Wn = 4×**
+
+* PMOS: Wp = 1.5 µm, L = 0.25 µm → W/L = 6.0
+* Switching threshold (Vm): ≈ 1.35 V
+* Rise delay: 45 psFall delay: 84 ps
+* Observation: Vm moves further right, rise delay continues to drop sharply.
+
+**Case 5: Wp/Wn = 5×**
+
+* PMOS: Wp = 1.875 µm, L = 0.25 µm → W/L = 7.5
+* Switching threshold (Vm): ≈ 1.4 V
+* Rise delay: 37 psFall delay: 89 ps
+* Observation: Rise delay dramatically reduced (fast charging), Vm shifted significantly higher.
+
+<img width="868" height="304" alt="image" src="https://github.com/user-attachments/assets/8558d475-e56b-4071-b57e-471408285c86" />
 
 
+**Main Conclusions**
+
+**Robustness of CMOS Inverter**
+
+* VTC shape (S-curve, inverting) remains nearly identical across Wp/Wn ratios.
+* Core logic function (Vin high → Vout low, Vin low → Vout high) preserved → CMOS is extremely reliable.
+
+**Switching Threshold (Vm) Behavior**
+
+* Vm shifts higher as Wp/Wn increases (stronger PMOS pull-up).
+* In range Wp/Wn = 1 to 3 → Vm varies only ~50–200 mV → very robust against fabrication variations.
+* Fabrication imperfections (Wp slightly off) cause minimal Vm shift.
+
+**Delay Variation**
+
+* Rise delay decreases significantly with larger Wp (faster CL charging).
+* Fall delay increases slightly (stronger PMOS slows discharge).
+* Symmetric rise/fall delay achieved around Wp/Wn = 2.5–3× → ideal for clock networks.
+
+**Applications**
+
+* Clock Inverters/Buffers
+  * Require Vm ≈ Vdd/2 (1.25 V for Vdd = 2.5 V) and equal rise/fall delay → Wp/Wn ≈ 2.5–3×.
+  * Ensures clean, symmetric clock waveform → no pulse distortion in clock tree.
+
+<img width="1541" height="855" alt="image" src="https://github.com/user-attachments/assets/246c8450-05a8-4527-ad79-94e0ab980454" />
+
+* Data Path Cells
+  * Use smaller Wp/Wn (e.g., 1×) for faster rise delay when needed.
+  * Trade-off: asymmetric delays but smaller cell area → useful in timing-critical data paths.
+
+<img width="1523" height="844" alt="image" src="https://github.com/user-attachments/assets/8e70fc82-d693-4cdf-a24d-2e0b7fd81d1c" />
 
 
+## **CMOS Inverter – Noise Margin & Practical VTC Characteristics**
+
+**Ideal vs Practical VTC**
+
+* Ideal inverter: Infinite slope at Vdd/2 → instantaneous switch from Vdd to 0 V
+* Practical inverter: Finite slope due to real resistances & capacitances
+* Transition is gradual (not vertical)
+* Vout never reaches exactly Vdd or 0 V
+
+<img width="786" height="629" alt="image" src="https://github.com/user-attachments/assets/d7792c3a-e6ff-4b29-a747-c6e41640e394" />
 
 
+**Key Regions on Practical VTC**
+
+* Input Low Region (0 to V_IL):
+  * Input voltage ≤ V_IL → output remains high (V_OH)
+  * V_IL = maximum input voltage still recognized as logic '0'
+
+* Input High Region (V_IH to Vdd):
+ * Input voltage ≥ V_IH → output remains low (V_OL)
+ * V_IH = minimum input voltage still recognized as logic '1'
+
+* Transition Region (V_IL to V_IH):
+  * Sharp slope (high gain)
+  * Small change in Vin → large change in Vout
+  * Both transistors in saturation → short-circuit current flows
 
 
+### **Noise Margin Definition**
+
+Noise margin = ability to tolerate noise (glitches, crosstalk) without logic error
+
+* NM_L (Low) = V_IL – V_OL
+* How much noise can be added to a logic '0' before it flips??
+
+* NM_H (High) = V_OH – V_IH
+* How much noise can be subtracted from a logic '1' before it flips??
+
+* **Higher noise margin** → more robust against noise in lower nodes
+
+**Why CMOS is Robust??**
+
+* Finite but steep slope → good gain + reasonable noise margins
+* V_IL and V_IH defined by saturation region → stable logic levels
+* Noise margins are positive and balanced in well-designed inverters
+
+<img width="960" height="689" alt="image" src="https://github.com/user-attachments/assets/0b2720c7-0795-46d7-8745-8d714f9d9135" />
 
 
+### **Noise Margin Voltage Parameters**
+
+**VTC Regions**
+
+* The VTC curve divides input voltage (Vin) into three sections:
+* Logic 0 region: 0 to V_IL
+* Transition (indeterminate) region: V_IL to V_IH
+* Logic 1 region: V_IH to Vdd
 
 
+**Logic Level Definitions**
+
+* Input logic 0: Vin between 0 and V_IL
+* Input logic 1: Vin between V_IH and Vdd
+* Output logic high: V_OH when input is in logic 0 region
+* Output logic low: V_OL when input is in logic 1 region
+
+**Practical VTC Characteristics**
+
+* Due to non-idealities (parasitic capacitance, finite resistance):
+* V_OL ≠ exactly 0 V (finite low voltage)
+* V_OH ≠ exactly Vdd (finite high voltage)
+* Transition is smooth (finite slope), not vertical
+
+**Cascade Requirement**
+
+* For proper logic cascading:
+* V_OL < V_IL → next stage recognizes logic 0
+* V_OH > V_IH → next stage recognizes logic 1
+
+These ensure reliable detection of logic levels in subsequent gates
+
+**Transition Region Slope**
+
+* Slope = ΔVout / ΔVin → negative (inverting behavior)
+* Near switching point: slope magnitude ≈ –1
+* Finite slope → realistic gain (not infinite)
+
+**Noise Margin Basics**
+
+* NM_L = V_IL – V_OL (noise margin for logic 0)
+* NM_H = V_OH – V_IH (noise margin for logic 1)
+* Positive noise margins → tolerance to input noise/glitches without logic error
+
+**Why These Parameters Matter??**
+
+* Guarantee reliable logic propagation in cascaded stages
+* Finite slope + defined V_IL/V_IH/V_OL/V_OH → balanced robustness in real circuits
 
 
-
-
-
+<img width="894" height="576" alt="image" src="https://github.com/user-attachments/assets/9362105f-c019-4550-80aa-d1cdff922ee4" />
 
 
 
