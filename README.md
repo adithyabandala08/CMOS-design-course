@@ -2,10 +2,10 @@
 
 # **Author**
 
-Pavan Adithya B (Student, VLSI Design Course)
+Pavan Adithya Bandala (Student, VLSI Design Course)
 
 # **Introduction**
-This report summarizes what I learnt from a CMOS circuit design workshop that used the open‑source SKY130 technology and ngspice for simulations. The main focus was to understand how an NMOS transistor works, how its drain current varies with terminal voltages, and why SPICE simulations are essential in modern VLSI design flows.
+This report captures the key concepts and hands-on learning from a CMOS circuit design workshop using the open-source SKY130 PDK and ngspice simulator. The primary focus was on understanding NMOS transistor operation, analyzing Id-Vgs and Id-Vds characteristics, and mastering SPICE-based simulation workflows. Through theory, derivations, and practical ngspice labs, I gained insight into device physics, static inverter behavior, robustness under variation and scaling, and the critical role of simulation in modern VLSI design flows.
 
 # **1. Introduction to CMOS Circuit Design**
 
@@ -1629,7 +1629,80 @@ Thickness varies along the gate length → Cox varies across channel.
 * Cox ↑ (thinner oxide in some regions) → Ids ↑ → stronger drive.
 * Result: Rise/fall delay changes → timing skew in chains, performance variation.
 
-<img width="1303" height="606" alt="image" src="https://github.com/user-attachments/assets/207d8a1d-ec6e-4d93-b44c-386ecd5de790" />
+<img width="1365" height="607" alt="image" src="https://github.com/user-attachments/assets/a08be28d-7f89-48c4-a9be-7b12180e82ee" />
+
+
+### **CMOS Inverter Robustness - Device Variation Experiment**
+
+**Objective**
+
+* Prove CMOS inverter is robust and minimally responsive to device variation.
+* We simulate extreme W/L changes (strong PMOS/weak NMOS → weak PMOS/strong NMOS) and observe VTC stability.
+
+<img width="1431" height="792" alt="image" src="https://github.com/user-attachments/assets/2d5a5dc4-9d9c-45e6-8ce2-5048a923f972" />
+
+**Setup**
+* Fixed L = 0.25 µm for both transistors
+* NMOS width swept: 0.375 µm (weak) → 1.875 µm (strong)
+* PMOS width swept: 1.875 µm (strong) → 0.375 µm (weak)
+* Step size: 0.375 µm (5 iterations total)
+* Vdd = 1.8 V, DC sweep Vin 0 to 1.8 V
+* SPICE technique: .step loop + .alter to change widths dynamically
+
+**SPICE Netlist Highlights**
+
+* PMOS (M1): .alter @M1[w]=1.875u → decreases to 0.375u
+* NMOS (M2): .alter @M2[w]=0.375u → increases to 1.875u
+* Loop: 5 iterations, plot DC1 to DC5 (Vout vs Vin)
+* Echo widths at each step for tracking
+
+**Key Observations**
+
+* VTC curves remain very similar across all 5 cases (strong PMOS/weak NMOS to weak PMOS/strong NMOS)
+* Inverting behavior preserved: Vin low → Vout high, Vin high → Vout low
+* Switching threshold (Vm), transition sharpness, and overall shape show only minor variation
+* No major distortion → core logic function stays intact
+
+<img width="789" height="637" alt="image" src="https://github.com/user-attachments/assets/3d8af3cb-1596-4dd7-a7f6-3eb3bb7ec519" />
+
+**Conclusion**
+
+* CMOS inverter is highly robust to extreme W/L variation
+* VTC characteristics change very little → reliable logic operation
+* Minimal responsiveness to device variation → key reason CMOS dominates digital design
+
+
+**Switching Threshold (Vm) Variation**
+
+* Vm shifts from ≈0.9 V (strong PMOS/weak NMOS) to ≈1.4 V (weak PMOS/strong NMOS)
+* Total variation ≈ 0.5 V
+* Acceptable range: Even with fabrication shifts (e.g., designed for Vm = 0.9 V but actual 0.7–1.1 V), inverter still functions correctly
+* Core inverting behavior remains intact → logic high/low preserved
+
+<img width="1098" height="659" alt="image" src="https://github.com/user-attachments/assets/fdad4bc5-ba3a-4801-971c-2a1193a3a00e" />
+
+**Noise Margin Variation**
+
+* NM_H (high): Varies from ≈0.3 V to ≈0.42 V (increase of ~120 mV)
+* NM_L (low): Varies from ≈0.3 V to ≈0.2 V (small drop)
+* Total variation: ~100–300 mV → stays positive and within acceptable range
+* Safe zones for noise/glitches remain wide → no flip to undefined region
+
+<img width="1238" height="710" alt="image" src="https://github.com/user-attachments/assets/e9405982-ddd6-406c-baa6-264f268a9fe3" />
+
+**Robustness Conclusion**
+
+* CMOS inverter is highly robust to device variation (W/L changes):
+* VTC shape, inverting function, and logic levels stay intact
+* Vm and noise margins shift minimally (within 100–500 mV)
+* No catastrophic failure even in extreme corners
+
+**NOTE:** This insensitivity is why CMOS is the dominant logic family → reliable for gates (NAND, NOR, etc.) despite real-world fabrication imperfections
+
+
+## **Final Note**
+In this course, I explored the static behavior of the CMOS inverter — the core of digital logic — through theory and Sky130 SPICE simulations. I learned to derive the VTC, calculate switching threshold (Vm), evaluate noise margins (NM_H and NM_L), and analyze practical characteristics (finite slope, V_OL > 0, V_OH < Vdd). I also studied its exceptional robustness: minimal shifts in Vm and noise margins under device variation (W/L mismatch, oxide thickness, etching), power supply scaling (2.5 V to 0.5 V), and process imperfections. This reliability, near-zero static power, and scalability explain why CMOS remains the foundation of VLSI. These concepts provide a solid base for gate design, timing, dynamic analysis, and beyond. Thank you for the knowledge.
+
 
 
 
