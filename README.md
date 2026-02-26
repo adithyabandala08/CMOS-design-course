@@ -1440,14 +1440,110 @@ With 50 fF load, the inverter shows strong noise immunity (NM_H ≈ 0.72 V, NM_L
 <img width="883" height="799" alt="image" src="https://github.com/user-attachments/assets/15a3d00e-10ed-4ebc-81f8-2215e5add169" />
 
 
+## **CMOS Inverter Robustness - Power Supply Variation**
+
+Power supply voltage (Vdd) scaling is a key trend in advanced technology nodes (e.g., from 2.5 V → 0.5 V). CMOS inverters must remain functional and robust despite lower Vdd.
+
+Core Behavior Under Scaling
+
+* The fundamental inverting function is preserved:
+* Vin low (0 V) → Vout high (≈ Vdd)
+* Vin high (Vdd) → Vout low (≈ 0 V)
+
+* VTC retains S-shaped transition → logic levels stay recognizable.
+
+**Switching Threshold (Vm) Scaling**
+
+* Vm ≈ Vdd/2 in balanced designs (Wp/Wn ≈ 2.5–3×)
+* As Vdd decreases, Vm scales proportionally → stays near the midpoint of the new supply range
+
+**Robustness**: Switching symmetry is maintained → reliable logic operation even at low Vdd.
+
+**Noise Margin Behavior**
+
+* Noise margins (NM_H and NM_L) scale with Vdd
+* NM_H = V_OH – V_IH, NM_L = V_IL – V_OL
+* Margins remain positive and reasonably balanced → inverter tolerates noise proportionally to supply voltage
+* No sudden loss of immunity → logic still reliable.
+
+**Why CMOS is Robust to Vdd Scaling??**
+
+* VTC shape, Vm tracking Vdd/2, and positive noise margins persist across wide Vdd range
+* No major distortion or failure in logic function
+* Wider PMOS (relative to NMOS) helps preserve symmetry and margins at lower Vdd
+* CMOS logic family remains the standard choice due to this scalability and robustness.
+
+**Conclusion**
+
+CMOS inverter static characteristics (VTC, Vm, noise margins) degrade gracefully with power supply reduction. The design stays functional, symmetric, and noise-immune → ideal for low-power, scaled technologies
+
+
+<img width="1520" height="849" alt="image" src="https://github.com/user-attachments/assets/b5d24b23-d421-4047-a1bc-9136fcc2dac2" />
 
 
 
+**Key Advantages of Lower Vdd**
+
+* Higher Gain
+  * At Vdd = 2.5 V: gain ≈ 7.38
+  * At Vdd = 0.5 V: gain ≈ 11.53
+  * ~56% improvement in gain → small ΔVin causes large ΔVout → excellent for analog amplification
+
+* Significant Energy Reduction
+  * Energy ∝ ½ C Vdd²
+  * From Vdd = 2.5 V to 0.5 V: energy reduction ≈ 96%
+  * Major power saving (critical for battery-powered devices like mobile phones)
+ 
+<img width="1781" height="1021" alt="image" src="https://github.com/user-attachments/assets/7d2a3b06-e1a9-4400-80bd-d5583768bea7" />
+
+**Major Disadvantage of Lower Vdd**
+
+* Performance Degradation (Delay Increase)
+  * At Vdd = 2.5 V: rise/fall delay ≈ 66–70 ps
+  * At Vdd = 0.5 V: rise/fall delay increases significantly (e.g., hundreds of ps)
+  * At Vdd = 1.0 V: delay much higher than at 2.5 V
+  * Reason: Insufficient voltage to charge/discharge load capacitance quickly → slow operation
+
+<img width="1153" height="887" alt="image" src="https://github.com/user-attachments/assets/02b92081-20cc-4b02-8486-ec68aed13809" /> <img width="1111" height="930" alt="image" src="https://github.com/user-attachments/assets/4746428a-9145-4873-8197-74da17ec091e" />
 
 
 
+**Why This Happens??**
+* Lower Vdd reduces drive strength → weaker charging/discharging current
+* Same load capacitance (CL) takes longer to charge/discharge
+* Performance (speed) suffers → not suitable for high-speed digital paths
 
 
+
+### **Power Supply Scaling Experiment**
+
+We simulated the CMOS inverter in Sky130 PDK by sweeping Vdd from 1.8 V down to lower values (step 0.2 V).
+
+* PMOS/NMOS sizing: Wp/Wn ratio ≈ 2.77 (PMOS wider)
+* Vin sweep: 0 to Vdd, step 0.01 V
+* Goal: Observe VTC and gain variation with reducing Vdd
+
+**Gain Calculation Method**
+
+* Gain = |ΔVout / ΔVin| in transition region
+* Select two points on VTC where slope ≈ –1 (steepest part)
+* Gain = (Vout1 – Vout2) / (Vin1 – Vin2) → absolute value
+
+**Gain Results with Vdd Scaling**
+
+* At Vdd = 1.8 V: gain ≈ 7.72
+* As Vdd decreases (e.g., 1.6 V, 1.4 V): gain increases (e.g., ≈ 9.5 at lower Vdd)
+* Peak gain observed around 1.2–1.0 V → higher amplification at reduced supply
+* Below ~1.0 V: gain starts decreasing significantly
+* Reason: Vdd too low to fully turn on PMOS/NMOS → insufficient drive strength
+* VTC becomes flatter → poor transition, reduced performance
+
+<img width="850" height="807" alt="image" src="https://github.com/user-attachments/assets/78bc80b6-22be-40da-8d52-6fd4bf6c5da3" />
+
+
+**Conclusion**
+
+Lower Vdd boosts gain (up to ~50% improvement) but only to a point. Below threshold Vdd, gain collapses due to insufficient voltage for transistor operation. Trade-off between power saving/gain and performance must be balanced.
 
 
 
