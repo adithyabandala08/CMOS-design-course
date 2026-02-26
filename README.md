@@ -1595,6 +1595,44 @@ CMOS inverters are built on real silicon, so fabrication imperfections cause dev
 <img width="1036" height="609" alt="image" src="https://github.com/user-attachments/assets/0e5b29fd-12c0-4861-8289-42923d8a18ee" />
 
 
+## **CMOS Inverter Robustness - Sources of Variation (Gate Oxide Thickness)**
+
+**Gate Oxide Thickness Variation**
+
+Gate oxide thickness (Tox) is a critical parameter in MOSFETs. It directly affects oxide capacitance (Cox = εox / Tox), which appears in the drain current equation: Ids ∝ Cox × (W/L) × (Vgs – Vt) × Vds.
+
+<img width="1527" height="685" alt="image" src="https://github.com/user-attachments/assets/6db69faf-b9b5-4209-bc68-9bf82b39381a" />
+
+**Ideal vs Real Oxidation Process**
+
+* Ideal: Uniform, constant oxide thickness across the entire channel length.
+* Real: Non-uniform thickness due to process imperfections in the fab (chemicals, gases, temperature non-uniformity).
+
+Thickness varies along the gate length → Cox varies across channel.
+
+<img width="1411" height="596" alt="vtc_5" src="https://github.com/user-attachments/assets/6b4f28ea-5a43-477d-83d7-2028ce7627f1" />
+
+**Single Transistor Impact**
+
+* In a single inverter (PMOS or NMOS): oxide thickness not constant → local Cox variation.
+* Changes effective gate control → Ids varies from ideal value.
+
+**Chain of Inverters Impact**
+
+* Middle inverters: More uniform neighboring structures → less oxide thickness variation.
+* Edge inverters: Exposed to different surrounding structures → higher variation.
+* Overall chain: Cumulative effect → delay mismatch between stages.
+
+**Link to Drain Current & Delay**
+
+* Cox ↓ (thicker oxide in some regions) → Ids ↓ → weaker drive strength.
+* Cox ↑ (thinner oxide in some regions) → Ids ↑ → stronger drive.
+* Result: Rise/fall delay changes → timing skew in chains, performance variation.
+
+<img width="1303" height="606" alt="image" src="https://github.com/user-attachments/assets/207d8a1d-ec6e-4d93-b44c-386ecd5de790" />
+
+
+
 
 
 
