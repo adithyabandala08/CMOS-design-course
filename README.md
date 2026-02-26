@@ -1538,13 +1538,61 @@ We simulated the CMOS inverter in Sky130 PDK by sweeping Vdd from 1.8 V down to 
 * Reason: Vdd too low to fully turn on PMOS/NMOS → insufficient drive strength
 * VTC becomes flatter → poor transition, reduced performance
 
-<img width="850" height="807" alt="image" src="https://github.com/user-attachments/assets/78bc80b6-22be-40da-8d52-6fd4bf6c5da3" />
-
+<img width="827" height="760" alt="vtc_4" src="https://github.com/user-attachments/assets/5cf1a13b-eeb8-4a16-9c18-98fe61922385" />
 
 **Conclusion**
 
 Lower Vdd boosts gain (up to ~50% improvement) but only to a point. Below threshold Vdd, gain collapses due to insufficient voltage for transistor operation. Trade-off between power saving/gain and performance must be balanced.
 
+
+## **CMOS Inverter Robustness - Sources of Variation (Etching Process)**
+
+**Sources of Variation in Fabrication**
+
+CMOS inverters are built on real silicon, so fabrication imperfections cause device parameters (W, L, etc.) to vary from ideal values. These variations directly affect static and dynamic behavior (delay, Vm, noise margins).
+* Etching Process as a Major Source
+* Etching defines the physical structures of transistors:
+  * Gate length (L) → channel length
+  * Diffusion width (W) → overlap area under gate
+* Edge sharpness and shape of poly gate, diffusion, and metal layers
+
+<img width="1474" height="676" alt="image" src="https://github.com/user-attachments/assets/685548ea-7a0f-4bd9-9355-613068f77e0e" />
+
+
+<img width="1502" height="796" alt="image" src="https://github.com/user-attachments/assets/fbd91892-0dd5-4792-99c2-b3d4b7feee7b" />
+
+**Ideal vs Real Etching Outcome**
+
+* Ideal etching: Perfect rectangles, sharp edges, exact W and L
+* Real etching: Distorted edges, rounded corners, non-uniform widths
+* Chemical/gas non-uniformity in fab lab causes variation
+* Structures near edges differ from center due to proximity effects
+
+<img width="1107" height="710" alt="image" src="https://github.com/user-attachments/assets/f69a0a87-ca85-4f17-b733-4f9dd56123af" />
+
+<img width="1514" height="806" alt="image" src="https://github.com/user-attachments/assets/12731be4-ac84-40ae-ac50-90f07013c4f9" />
+
+
+**Impact on Single Inverter**
+
+* Gate length L becomes shorter or irregular → changes effective channel length
+* Width W becomes non-uniform → changes effective W/L ratio
+* Overlap area (W × L) varies → affects drive current (Ids)
+
+**Impact on Chain of Inverters**
+
+* Center inverters: More periodic, similar distortion on both sides
+* Edge inverters: Asymmetric distortion (different neighboring structures)
+* Overall chain: Cumulative variation → delay mismatch between stages
+
+**Link to Delay**
+
+* Drain current Ids ∝ (W/L) × (Vgs – Vt) × Vds (linear region)
+* Any variation in W or L directly changes Ids → changes charging/discharging current
+* Result: Rise/fall delay increases or becomes asymmetric → impacts circuit timing
+
+
+<img width="1036" height="609" alt="image" src="https://github.com/user-attachments/assets/0e5b29fd-12c0-4861-8289-42923d8a18ee" />
 
 
 
