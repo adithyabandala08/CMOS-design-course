@@ -1322,9 +1322,122 @@ These ensure reliable detection of logic levels in subsequent gates
 <img width="894" height="576" alt="image" src="https://github.com/user-attachments/assets/9362105f-c019-4550-80aa-d1cdff922ee4" />
 
 
+Defined Voltage Levels
+
+* V_IL: Max input voltage recognized as logic '0'
+* V_IH: Min input voltage recognized as logic '1'
+* V_OH: Output high voltage (close to Vdd)
+* V_OL: Output low voltage (close to 0 V)
+
+
+The practical VTC curve of a CMOS inverter has a finite negative slope in the transition region instead of an infinite vertical drop. This gradual transition happens because of real device resistances and capacitances.
+
+The curve divides the input voltage into three main regions. The logic 0 region is from 0 V to V_IL, where any input voltage is recognized as logic 0. The transition (indeterminate) region lies between V_IL and V_IH. The logic 1 region is from V_IH to Vdd, where any input voltage is recognized as logic 1.
+
+
+<img width="863" height="592" alt="image" src="https://github.com/user-attachments/assets/4cdc9c6b-a57d-4291-98f1-f1f71c780c61" />
+
+In the logic 0 input region (0 to V_IL), the output is expected to be high at V_OH. In the logic 1 input region (V_IH to Vdd), the output is expected to be low at V_OL. Due to non-idealities, V_OL is not exactly 0 V and V_OH is not exactly Vdd.
+
+For reliable cascading to the next stage, V_OL must be less than V_IL so the next gate sees logic 0. Similarly, V_OH must be greater than V_IH so the next gate sees logic 1. These conditions ensure correct logic detection.
+
+The slope in the transition region is negative because an increase in input voltage causes a decrease in output voltage. Near the switching point, the slope magnitude is approximately –1, reflecting realistic gain.
+
+**Noise Margin Definitions**
+
+* NM_H = V_OH – V_IH
+  * Tolerance for logic '1' (noise that can be subtracted without flipping)
+* NM_L = V_IL – V_OL
+  * Tolerance for logic '0' (noise that can be added without flipping)
+
+These parameters make CMOS robust against glitches and crosstalk. Positive noise margins guarantee stable logic propagation in cascaded stages.
+
+<img width="880" height="559" alt="image" src="https://github.com/user-attachments/assets/06e910e7-c2c8-4f1a-95b2-28b34153f7a9" />
+
+
+### **Noise Margin High & Low Variation with PMOS Sizing**
+
+**Noise Margin vs Wp/Wn Ratio**
+
+* Wp/Wn = 1×: NM_H ≈ 0.3 V, NM_L ≈ 0.3 V
+* Wp/Wn = 2×: NM_H ≈ 0.35 V (↑ 50 mV), NM_L ≈ 0.3 V (unchanged)
+* Wp/Wn = 3×: NM_H ≈ 0.4 V (↑ further), NM_L ≈ 0.3 V
+* Wp/Wn = 4×: NM_H ≈ 0.42 V (small ↑), NM_L drops slightly
+* Wp/Wn = 5×: NM_H saturates ≈ 0.42 V, NM_L drops more
+
+<img width="1520" height="818" alt="image" src="https://github.com/user-attachments/assets/3434971a-2366-434e-a206-912e9cd082aa" />
+
+<img width="1523" height="842" alt="image" src="https://github.com/user-attachments/assets/37a1b1f4-4303-44cd-86c1-6746dc544e2d" />
+
+<img width="1519" height="817" alt="image" src="https://github.com/user-attachments/assets/cfe4b4c3-8104-4bea-9c92-d40377b71908" />
+
+<img width="1502" height="824" alt="image" src="https://github.com/user-attachments/assets/35867a63-359d-4946-8c8f-47415c1c9cd6" />
+
+<img width="1515" height="807" alt="image" src="https://github.com/user-attachments/assets/aa7eb48e-0c7a-4470-a39f-fa0755c99d54" />
+
+
+**Key Observations**
+
+<img width="935" height="358" alt="image" src="https://github.com/user-attachments/assets/15476a4c-ef3d-4711-be9d-f071800eaacd" />
+
+* Increasing Wp (stronger PMOS) → NM_H increases (better tolerance for logic '1')
+* Reason: PMOS holds logic high (V_OH) more strongly → wider safe range
+
+* NM_L remains nearly constant or slightly decreases
+* Reason: Stronger PMOS weakens NMOS ability to hold logic low (V_OL)
+
+* Overall variation: NM_H changes ~120 mV (0.3 → 0.42 V), NM_L ~30 mV → small and acceptable
+
+**Robustness Conclusion**
+
+* Noise margins stay stable (within 100–150 mV) even if Wp/Wn varies ±20–30% due to fabrication imperfections
+* CMOS inverter is highly immune to sizing variations → robust logic operation
+* Digital design: Use Wp/Wn ≈ 2.5–3× for balanced NM_H/NM_L and Vm ≈ Vdd/2
+
+<img width="916" height="673" alt="image" src="https://github.com/user-attachments/assets/22ae1511-3534-4488-9439-6909769bb400" />
+
+* Analog design: Use transition region (high gain) for amplification
+
+<img width="830" height="685" alt="image" src="https://github.com/user-attachments/assets/7ebd57ea-5b32-4749-a18d-03ec38151bc0" />
 
 
 
+### **Labs - Sky130 Noise Margin SPICE Simulations**
+
+**Objective**
+
+Simulate CMOS inverter in Sky130 PDK using ngspice to determine practical noise margins (NM_H and NM_L) with a load capacitance of 50 fF at the output node.
+
+**Simulation Setup**
+
+* Technology: Sky130 PDK (typical corner)
+* Load capacitance: CL = 50 fF connected at Vout
+* DC sweep: Vin from 0 to 1.8 V (to plot VTC)
+* Measured points on VTC:
+  * V_IL, V_IH (where slope = –1 or transition edges)
+  * V_OH (output high level)
+  * V_OL (output low level)
+
+**Noise Margin Results**
+
+* Noise Margin High (NM_H) = V_OH – V_IH
+  * 0.98 V – 1.7 V = 0.72 V
+* Noise Margin Low (NM_L) = V_IL – V_OL
+  * 0.78 V – 0.11 V = 0.67 V
+
+**Key Observations**
+
+* NM_H ≈ 0.72 V → good tolerance for logic '1' (noise that can be subtracted from high level)
+* NM_L ≈ 0.67 V → good tolerance for logic '0' (noise that can be added to low level)
+* Balanced noise margins (~0.7 V each) → robust against glitches/crosstalk in Sky130
+* Finite V_OH < Vdd and V_OL > 0 V due to real device behavior
+
+**Conclusion**
+
+With 50 fF load, the inverter shows strong noise immunity (NM_H ≈ 0.72 V, NM_L ≈ 0.67 V), confirming CMOS robustness in Sky130 for digital design.
+
+
+<img width="883" height="799" alt="image" src="https://github.com/user-attachments/assets/15a3d00e-10ed-4ebc-81f8-2215e5add169" />
 
 
 
